@@ -15,7 +15,7 @@ repo init --depth=1 -u git://github.com/minimal-manifest-twrp/platform_manifest_
 
 repo sync
 
-git clone --depth=1 https://github.com/ZyCromerZ/twrp_redmi_begonia -b android-11 device/redmi/begonia
+git clone --depth=1 https://github.com/ZyCromerZ/twrp_redmi_begonia -b android-11.0 device/redmi/begonia
 
 export ALLOW_MISSING_DEPENDENCIES=true
 
