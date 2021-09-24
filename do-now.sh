@@ -13,7 +13,7 @@ mkdir recovery && cd recovery
 
 repo init --depth=1 -u git://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-11
 
-repo sync
+repo sync -j$(nproc --all)
 
 git clone --depth=1 https://github.com/ZyCromerZ/twrp_redmi_begonia -b android-11.0 device/redmi/begonia
 
@@ -23,7 +23,7 @@ export ALLOW_MISSING_DEPENDENCIES=true
 
 lunch twrp_begonia-eng
 
-make -j8 recoveryimage
+make -j$(nproc --all) recoveryimage
 
 cd ..
 
