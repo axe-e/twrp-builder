@@ -38,12 +38,14 @@ mka recoveryimage -j$(nproc --all)
 cd ..
 
 cd recovery/out/target/product/begonia
-zip -r9 TWRP-begonia-miui-12.5.zip recovery.img
+ZipName="[$(date +"%Y%m%d")]TWRP-begonia-miui-12.5.zip"
+zip -r9 $ZipName recovery.img
 cd "$MAINPATH"
 
 if [ -f recovery/out/target/product/begonia/recovery.img ];then
     git clone https://${GIT_SECRET}@github.com/ZyCromerZ/uploader-kernel-private
-    chmod +x $(pwd)/uploader-kernel-private/run.sh
-    . $(pwd)/uploader-kernel-private/run.sh "$(pwd)/recovery/out/target/product/begonia/recovery.img" "shared-file" "$(date +"%Y-%m-%d")"
-    . $(pwd)/uploader-kernel-private/run.sh "$(pwd)/recovery/out/target/product/begonia/TWRP-begonia-miui-12.5.zip" "shared-file" "$(date +"%Y-%m-%d")"
+    cd uploader-kernel-private
+    chmod +x ./uploader-kernel-private/run.sh
+    . ./run.sh "$MAINPATH/recovery/out/target/product/begonia/recovery.img" "shared-file" "$(date +"%Y-%m-%d")"
+    . ./run.sh "$MAINPATH/recovery/out/target/product/begonia/$ZipName" "shared-file" "$(date +"%Y-%m-%d")"
 fi
