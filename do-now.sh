@@ -18,9 +18,10 @@ curl https://storage.googleapis.com/git-repo-downloads/repo > $(pwd)/reep/repo
 chmod a+rx $(pwd)/reep/repo
 
 mkdir recovery && cd recovery
-repo init -q --no-repo-verify --depth=1 -u git://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-11 -g default,-device,-mips,-darwin,-notdefault --clone-filter=blob:limit=10M
 
-repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j$(nproc --all)
+repo init git://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-11 --depth=1 --partial-clone --clone-filter=blob:limit=10M --groups=all,-notdefault,-device,-darwin,-x86,-mips
+
+repo sync -j$(nproc --all)
 
 git clone --depth=1 https://github.com/ZyCromerZ/twrp_redmi_begonia -b android-11.0 device/redmi/begonia
 
@@ -31,7 +32,7 @@ ALLOW_MISSING_DEPENDENCIES=true
 
 lunch twrp_begonia-eng
 
-repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j$(nproc --all)
+repo sync -j$(nproc --all)
 
 mka recoveryimage -j$(nproc --all)
 
