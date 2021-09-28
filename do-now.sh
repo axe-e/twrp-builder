@@ -23,7 +23,7 @@ repo init git://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git
 
 repo sync -j$(nproc --all)
 
-git clone --depth=1 https://github.com/ZyCromerZ/twrp_redmi_begonia -b android-11.0 device/redmi/begonia
+git clone --depth=2 https://github.com/ZyCromerZ/twrp_redmi_begonia -b android-11.0 device/redmi/begonia
 
 export ALLOW_MISSING_DEPENDENCIES=true
 ALLOW_MISSING_DEPENDENCIES=true
@@ -46,7 +46,42 @@ cd "$MAINPATH"
 if [ -f recovery/out/target/product/begonia/recovery.img ];then
     git clone https://${GIT_SECRET}@github.com/ZyCromerZ/uploader-kernel-private
     cd uploader-kernel-private
-    chmod +x ./uploader-kernel-private/run.sh
+    chmod +x ./run.sh
     . ./run.sh "$MAINPATH/recovery/out/target/product/begonia/recovery.img" "shared-file" "$(date +"%Y-%m-%d")"
     . ./run.sh "$MAINPATH/recovery/out/target/product/begonia/$ZipName" "shared-file" "$(date +"%Y-%m-%d")"
+    rm -rf $MAINPATH/recovery/out/target/product/begonia/recovery.img $MAINPATH/recovery/out/target/product/begonia/$ZipName
 fi
+
+cd "$MAINPATH/recovery/device/redmi/begonia"
+
+git reset --hard HEAD~1
+cd "$MAINPATH/recovery"
+
+export ALLOW_MISSING_DEPENDENCIES=true
+ALLOW_MISSING_DEPENDENCIES=true
+
+. build/envsetup.sh
+
+lunch twrp_begonia-eng
+
+repo sync -j$(nproc --all)
+
+mka recoveryimage -j$(nproc --all)
+
+cd ..
+
+cd recovery/out/target/product/begonia
+ZipName="[$(date +"%Y%m%d")][2]TWRP-begonia-miui-12.5.zip"
+zip -r9 $ZipName recovery.img
+cd "$MAINPATH"
+
+if [ -f recovery/out/target/product/begonia/recovery.img ];then
+    cp -af recovery/out/target/product/begonia/recovery.img recovery/out/target/product/begonia/recovery2.img
+    git clone https://${GIT_SECRET}@github.com/ZyCromerZ/uploader-kernel-private
+    cd uploader-kernel-private
+    chmod +x ./run.sh
+    . ./run.sh "$MAINPATH/recovery/out/target/product/begonia/recovery2.img" "shared-file" "$(date +"%Y-%m-%d")"
+    . ./run.sh "$MAINPATH/recovery/out/target/product/begonia/$ZipName" "shared-file" "$(date +"%Y-%m-%d")"
+fi
+cd "$MAINPATH"
+rm -rf *
